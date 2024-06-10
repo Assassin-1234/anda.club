@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anda.Club | Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <nav id="nav" style="width: 100vw; backdrop-filter: blur(3px); box-shadow: inset 0 -1px 0 0 hsla(0,0%,100%,0.1)">
+        <div class="nav-container-custom nav-wrapper">
+            <div class="brand">
+                <span>
+                    <a href="/" class="shine"
+                        style="color: white; letter-spacing: 1.1px; font-size: 30px">🥚Anda.Club</a>
+                </span>
+            </div>
+            <a href="/favorites"
+                class="user-info cursor-pointer p-0.5 px-2.5 rounded-[3px] duration-75 hover:bg-[#0e0e0e] bg-[pink] flex items-center gap-2">
+                <img src="<%= pfp %>" class="user-pfp w-8 rounded-full" />
+                <div class="user-info-text text-sm text-gray-100">
+                    <span class="user-name">
+                        <%= user.username %>
+                    </span>
+                </div>
+            </a>
+    </nav>
+    <div class="upload-content flex min-h-[80vh] justify-center items-center">
+        <form class="upload-form" onsubmit="loader()" method="POST" action="/upload" enctype="multipart/form-data">
+            <div>
+                <h2>Edit Profile</h2>
+                <input required="" type="file" name="img" id="upload" hidden="">
+                <h3 class="form-label text-xl uppercase text-gray-300">PFP</h3>
+                <label for="upload">Choose File</label>
+                <span id="file-chosen">No file chosen</span>
+            </div>
+            <img id="img-preview" src="#" alt="preview" class="hidden mt-3 rounded-[7px]">
+            <div>
+                <div class="form-container flex flex-col mt-3">
+                    <h3 class="form-label text-xl uppercase text-gray-300">Password</h3>
+                    <input class="form-input" type="text" id="caption" placeholder="caption" name="password"
+                        required>
+                </div>
+                <input type="submit" class="btn-css center" value="Upload">
+            </div>
+        </form>
+    </div>
+    <script>
+        const fileInput = document.getElementById("upload");
+        const fileChosen = document.getElementById('file-chosen');
+        fileInput.addEventListener('change', function () {
+            fileChosen.textContent = this.files[0].name;
+            const oFReader = new FileReader();
+            oFReader.readAsDataURL(document.getElementById("upload").files[0]);
+
+            oFReader.onload = function (oFREvent) {
+                const { result } = oFREvent.target;
+                if (result.includes('image')) {
+                    document.getElementById("img-preview").src = result;
+                    document.getElementById("img-preview").classList.remove('hidden');
+                }
+            };
+        })
+        window.addEventListener('paste', e => {
+            console.log(e.clipboardData)
+            fileInput.files = e.clipboardData.files;
+            fileChosen.textContent = e.clipboardData.files[0].name;
+        });
+        document.querySelector('.user-info').addEventListener('mouseover', e => {
+            document.querySelector('.user-name').innerHTML = 'View Favorites';
+        });
+        document.querySelector('.user-info').addEventListener('mouseout', e => {
+            document.querySelector('.user-name').innerHTML = '<%= user.username %>';
+        });
+    </script>
+</body>
+
+</html>

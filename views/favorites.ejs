@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anda.Club</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0-beta2/css/all.css" />
+
+</head>
+
+<body>
+    <nav id="nav" style="width: 100vw; backdrop-filter: blur(3px); box-shadow: inset 0 -1px 0 0 hsla(0,0%,100%,0.1)">
+        <div class="nav-container-custom nav-wrapper">
+            <div class="brand">
+                <span>
+                    <a href="/" class="shine"
+                        style="color: white; letter-spacing: 1.1px; font-size: 30px">🥚Anda.Club</a>
+                </span>
+            </div>
+            <div class="flex items-center jusify-center gap-2">
+                <div
+                    class="user-info cursor-pointer p-0.5 px-2.5 rounded-[3px] duration-75 hover:bg-[#0e0e0e] bg-[pink] flex items-center gap-2">
+                    <img src="<%= pfp %>" class="user-pfp w-8 rounded-full" />
+                    <div class="user-info-text text-sm text-gray-100">
+                        <span class="user-name">
+                            <%= user.username %>
+                        </span>
+                    </div>
+                </div>
+                <a href="/upload"
+                    class="flex jusify-center items-center gap-2 hover:bg-[#0e0e0e] hover:border-black bg-[pink] p-1.5 rounded-[3px] text-white text-sm cursor-pointer">
+                    <span>Upload</span>
+                </a>
+            </div>
+    </nav>
+    <div class="gallery-box px-[4.5vw] mt-[5vh]">
+        <div class="images flex flex-col lg:block">
+            <% files.forEach(file=> { %>
+                <% if (file.extension==='.mp4' ) { %>
+                    <div class="file-card cursor-pointer card-<%= file.id %> bg-[pink]">
+                        <video class="file-img relative" preload="metadata" controls>
+                            <source src="/<%= `${file.id + file.extension}#t=0.1` %>">
+                        </video>
+                        <div id="background-darkener" class="absolute duration-75 hidden w-full h-[80%] top-0"
+                            style="z-index: -1;border-radius: 0.5rem;background: linear-gradient(transparent 62%, rgba(0, 0, 10, 0.004) 63.94%, rgba(0, 0, 10, 0.016) 65.89%, rgba(0, 0, 10, 0.03) 67.83%, rgba(0, 0, 10, 0.06) 69.78%, rgba(53, 53, 58, 0.094) 71.72%, rgba(0, 0, 10, 0.133) 73.67%, rgba(0, 0, 10, 0.176) 75.61%, rgba(0, 0, 10, 0.224) 77.56%, rgba(0, 0, 10, 0.267) 79.5%, rgba(0, 0, 10, 0.306) 81.44%, rgba(0, 0, 10, 0.34) 83.39%, rgba(0, 0, 10, 0.37) 85.33%, rgba(0, 0, 10, 0.384) 87.28%, rgba(0, 0, 10, 0.396) 89.22%, rgba(0, 0, 10, 0.4) 91.17%);">
+                        </div>
+                        <div id="file-info-text" class="file-info px-4 p-3 absolute duration-75 hidden top-0">
+                            <h3 class="file-caption">
+                                <%= file.caption %> - <span class="text-gray-300">Uploaded by <%= file.user
+                                            %></span>
+                            </h3>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <div class="file-card cursor-pointer card-<%= file.id %> bg-[pink]">
+                            <img src="/<%= `${file.id + file.extension}` %>" alt="<%= file.caption %>"
+                                class="file-img relative">
+                            <div id="background-darkener" class="absolute duration-75 hidden w-full h-64 bottom-0"
+                                style="border-radius: 0.2rem;background: linear-gradient(transparent 62%, rgba(0, 0, 10, 0.004) 63.94%, rgba(0, 0, 10, 0.016) 65.89%, rgba(0, 0, 10, 0.03) 67.83%, rgba(0, 0, 10, 0.06) 69.78%, rgba(53, 53, 58, 0.094) 71.72%, rgba(0, 0, 10, 0.133) 73.67%, rgba(0, 0, 10, 0.176) 75.61%, rgba(0, 0, 10, 0.224) 77.56%, rgba(0, 0, 10, 0.267) 79.5%, rgba(0, 0, 10, 0.306) 81.44%, rgba(0, 0, 10, 0.34) 83.39%, rgba(0, 0, 10, 0.37) 85.33%, rgba(0, 0, 10, 0.384) 87.28%, rgba(0, 0, 10, 0.396) 89.22%, rgba(0, 0, 10, 0.4) 91.17%);">
+                            </div>
+                            <div id="file-info-text" class="file-info px-4 p-3 absolute duration-75 hidden bottom-0">
+                                <h3 class="file-caption">
+                                    <%= file.caption %>
+                                </h3>
+                                <p class="file-uploader text-gray-300">Uploaded by <%= file.user %>
+                                </p>
+                            </div>
+                        </div>
+                        <% } %>
+                            <% }) %>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const fileCards = document.querySelectorAll('.file-card');
+        fileCards.forEach(card => {
+            card.addEventListener('mouseover', () => {
+                card.querySelector('#background-darkener').classList.remove('hidden');
+                card.querySelector('.file-info').classList.remove('hidden');
+            });
+            card.addEventListener('mouseout', () => {
+                card.querySelector('#background-darkener').classList.add('hidden');
+                card.querySelector('.file-info').classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+
+</html>
