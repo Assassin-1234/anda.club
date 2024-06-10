@@ -15,11 +15,12 @@
     <div class="nav-container-custom nav-wrapper">
       <div class="brand">
         <span>
-          <a href="/" class="shine" style="color: white; letter-spacing: 1.1px; font-size: 30px">🥚Anda.Club</a>
+          <a href="/" class="shine flex items-center jusify-center" style="color: white; letter-spacing: 1.1px; font-size: 32px;"><img class="w-[34px] h-[34px]" src="https://em-content.zobj.net/source/microsoft/209/egg_1f95a.png" alt="d">Anda.Club</a>
         </span>
       </div>
       <div class="flex items-center jusify-center gap-2">
-        <a href="/favorites"
+        <a href="/favorites"><i class="view-fav fa-regular fa-heart cursor-pointer text-[#0e0e0e] text-xl hover:scale-125"></i></a>
+        <a href="/editprofile"
           class="user-info cursor-pointer p-0.5 px-2.5 rounded-[3px] duration-75 hover:bg-[#0e0e0e] bg-[pink] flex items-center gap-2">
           <img src="<%= pfp %>" class="user-pfp w-8 rounded-full" />
           <div class="user-info-text text-sm text-gray-100">
@@ -51,6 +52,7 @@
               </h3>
             </div>
             <div id="file-favorite" class="absolute hidden file-action top-0 right-0 px-4 p-3">
+              <i class="fa-regular fa-trash-can hover:text-[#ff3040]"></i>
               <i id="fav-<%= file.id %>" class="fa-regular fa-heart text-[#ff3040] favorite-button"></i>
             </div>
           </div>
@@ -69,6 +71,7 @@
                 </p>
               </div>
               <div id="file-favorite" class="absolute hidden file-action bottom-0 right-0 px-4 p-3">
+                <i class="fa-regular fa-trash-can hover:text-[#ff3040]"></i>
                 <i id="fav-<%=file.id%>" class="fa-regular fa-heart text-[#ff3040] favorite-button"></i>
               </div>
             </div>
@@ -131,9 +134,31 @@
           }
         });
       });
+      card.querySelector('.fa-trash-can').addEventListener('click', () => {
+        fetch(`/${card.id.split("-")[1]}/delete`, {
+          method: 'POST',
+        }).then(res => res.json()).then(data => {
+          if (data.success) {
+            Swal.fire({
+              text: 'Deleted!',
+              icon: 'success',
+              confirmButtonText: 'Ok',
+            }).then((value) => {
+              window.location.reload()
+            })
+          } else if (data.error) {
+            Swal.fire({
+              text: 'You do not have permission to delete this file!',
+              icon: 'error',
+              confirmButtonText: 'Ok',
+            })
+          }
+        });
+      });
     });
+
     document.querySelector('.user-info').addEventListener('mouseover', e => {
-      document.querySelector('.user-name').innerHTML = 'View Favorites';
+      document.querySelector('.user-name').innerHTML = 'Edit Profile';
     });
     document.querySelector('.user-info').addEventListener('mouseout', e => {
       document.querySelector('.user-name').innerHTML = '<%= user.username %>';

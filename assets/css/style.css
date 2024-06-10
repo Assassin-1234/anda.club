@@ -145,32 +145,34 @@ label {
     box-shadow: none !important;
 }
 
-/* .user-info {
+.view-fav {
     position: relative;
 }
 
-.user-info:after {
+.view-fav:after {
     content: "View Favorites";
     position: absolute;
-    top: -24px;
+    right: -55px;
+    top: 35px;
     right: 0;
     left: 0;
     display: none;
     text-align: center;
     width: max-content;
     background-color: pink;
-    color: #000;
+    border: 2px dashed #fff;
+    color: #fff;
     border-radius: 4px;
-    padding: 5px;
-    font-size: 15px;
+    padding: 2px;
+    font-size: 14px;
     text-transform: capitalize;
     font-family: monospace
 }
 
-.user-info:hover:after {
+.view-fav:hover:after {
     display: block;
 
-} */
+}
 
 h3 {
     /* font-family: monospace; */

@@ -192,8 +192,8 @@ app.post('/upload', upload.single('img'), function (req, res, next) {
             fs.rename(`./uploads/${req.file.path.slice(8)}`, `./uploads/${id.replace(/-/g, '')}${extension}`, function (err) {
                 console.log(err);
             });
-            db.set(id, {
-                id,
+            db.set(id.replace(/-/g, ''), {
+                id: id.replace(/-/g, ''),
                 caption,
                 extension,
                 user: req.session.user.username
@@ -223,15 +223,16 @@ app.get('/pfp/:id', async (req, res) => {
     res.sendFile(process.cwd() + '/uploads/' + id)
 })
 
-app.get('/:id/delete', async (req, res) => {
+app.post('/:id/delete', async (req, res) => {
     if (!req.session.user) return res.redirect('/login');
     const { id } = req.params;
     const data = await db.get(id.split(".")[0]);
     if (!data) return res.json({ error: 'Invalid File' });
     if (data.user !== req.session.user.username) return res.json({ error: 'You do not have permission to delete this file' });
     await db.delete(id.split(".")[0]);
-    fs.unlinkSync(`./uploads/${id}`);
-    res.redirect('/');
+    fs.unlinkSync(`./uploads/${id}${data.extension}`);
+    await db.delete(`${req.session.user.username}.favorites`, data);
+    res.json({ success: 'File deleted' });
 })
 
 app.listen(80, () => {

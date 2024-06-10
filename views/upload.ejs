@@ -7,6 +7,7 @@
   <title>Anda.Club | Upload</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0-beta2/css/all.css" />
 </head>
 
 <body>
@@ -14,18 +15,23 @@
     <div class="nav-container-custom nav-wrapper">
       <div class="brand">
         <span>
-          <a href="/" class="shine" style="color: white; letter-spacing: 1.1px; font-size: 30px">🥚Anda.Club</a>
+          <a href="/" class="shine flex items-center jusify-center"
+            style="color: white; letter-spacing: 1.1px; font-size: 32px;"><img class="w-[34px] h-[34px]"
+              src="https://em-content.zobj.net/source/microsoft/209/egg_1f95a.png" alt="d">Anda.Club</a>
         </span>
       </div>
-      <a href="/favorites"
-        class="user-info cursor-pointer p-0.5 px-2.5 rounded-[3px] duration-75 hover:bg-[#0e0e0e] bg-[pink] flex items-center gap-2">
-        <img src="<%= pfp %>" class="user-pfp w-8 rounded-full" />
-        <div class="user-info-text text-sm text-gray-100">
-          <span class="user-name">
-            <%= user.username %>
-          </span>
-        </div>
-      </a>
+      <div class="flex items-center jusify-center gap-2">
+        <a href="/favorites"><i class="view-fav fa-regular fa-heart cursor-pointer text-[#0e0e0e] text-xl hover:scale-125"></i></a>
+        <a href="/editprofile"
+          class="user-info cursor-pointer p-0.5 px-2.5 rounded-[3px] duration-75 hover:bg-[#0e0e0e] bg-[pink] flex items-center gap-2">
+          <img src="<%= pfp %>" class="user-pfp w-8 rounded-full" />
+          <div class="user-info-text text-sm text-gray-100">
+            <span class="user-name">
+              <%= user.username %>
+            </span>
+          </div>
+        </a>
+      </div>
   </nav>
   <div class="upload-content flex min-h-[80vh] justify-center items-center">
     <form class="upload-form" onsubmit="loader()" method="POST" action="/upload" enctype="multipart/form-data">
@@ -67,7 +73,7 @@
       fileChosen.textContent = e.clipboardData.files[0].name;
     });
     document.querySelector('.user-info').addEventListener('mouseover', e => {
-      document.querySelector('.user-name').innerHTML = 'View Favorites';
+      document.querySelector('.user-name').innerHTML = 'Edit Profile';
     });
     document.querySelector('.user-info').addEventListener('mouseout', e => {
       document.querySelector('.user-name').innerHTML = '<%= user.username %>';
