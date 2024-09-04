@@ -107,7 +107,7 @@ app.get('/favorites', async (req, res) => {
     if (validateCredentials(user.username, user.password)) {
         const favorites = await db.get(`${user.username}.favorites`) || [];
         const unique = [...new Set(favorites)]
-        res.render('favorites', { user, files: unique, pfp: users.find(u => u.username === user.username).pfp});
+        res.render('favorites', { user, files: unique, pfp: users.find(u => u.username === user.username).pfp });
     } else {
         res.json({ error: 'Invalid credentials' });
     }
@@ -146,11 +146,11 @@ app.post("/login", (req, res) => {
     } else return res.json({ error: 'Invalid credentials' });
 });
 
-app.post('/upload', upload.single('img'), function (req, res, next) {
+app.post('/upload', upload.array('img', 30), function (req, res, next) {
     try {
         if (req.body.password) {
             const { password } = req.body;
-            const { path: f } = req.file;
+            const { path: f } = req.files[0];
             if (!f) return res.json({ error: 'Provide a file!' });
             const id = shortid.generate();
             const supportedFiletypes = [
@@ -159,12 +159,12 @@ app.post('/upload', upload.single('img'), function (req, res, next) {
                 'image/jpg',
                 'image/png',
             ];
-            console.log(req.file.mimetype)
-            if (!supportedFiletypes.includes(req.file.mimetype)) return res.json({
+            console.log(req.files[0].mimetype)
+            if (!supportedFiletypes.includes(req.files[0].mimetype)) return res.json({
                 error: "Couldn't upload file. Please try again with one of the correct filetypes: png, jpeg, jpg, .gif'"
             })
-            const extension = path.extname(req.file.originalname);
-            fs.rename(`./uploads/${req.file.path.slice(8)}`, `./uploads/${id}${extension}`, function (err) {
+            const extension = path.extname(req.files[0].originalname);
+            fs.rename(`./uploads/${req.files[0].path.slice(8)}`, `./uploads/${id}${extension}`, function (err) {
                 console.log(err);
             });
             users.find(u => u.username === req.session.user.username).password = password;
@@ -173,31 +173,33 @@ app.post('/upload', upload.single('img'), function (req, res, next) {
             req.session.user.password = password;
             res.redirect('/');
         } else {
-            const { path: f } = req.file;
-            const { caption } = req.body;
-            if (!f) return res.json({ error: 'Provide a file!' });
-            const id = shortid.generate();
-            const supportedFiletypes = [
-                'image/gif',
-                'image/jpeg',
-                'image/jpg',
-                'image/png',
-                'video/mp4'
-            ];
-            console.log(req.file.mimetype)
-            if (!supportedFiletypes.includes(req.file.mimetype)) return res.json({
-                error: "Couldn't upload file. Please try again with one of the correct filetypes: png, jpeg, jpg, .mp4, .gif'"
+            req.files.forEach(file => {
+                const { path: f } = file;
+                const { caption } = req.body;
+                if (!f) return res.json({ error: 'Provide a file!' });
+                const id = shortid.generate();
+                const supportedFiletypes = [
+                    'image/gif',
+                    'image/jpeg',
+                    'image/jpg',
+                    'image/png',
+                    'video/mp4'
+                ];
+                console.log(file.mimetype)
+                if (!supportedFiletypes.includes(file.mimetype)) return res.json({
+                    error: "Couldn't upload file. Please try again with one of the correct filetypes: png, jpeg, jpg, .mp4, .gif'"
+                })
+                const extension = path.extname(file.originalname);
+                fs.rename(`./uploads/${file.path.slice(8)}`, `./uploads/${id.replace(/-/g, '')}${extension}`, function (err) {
+                    console.log(err);
+                });
+                db.set(id.replace(/-/g, ''), {
+                    id: id.replace(/-/g, ''),
+                    caption,
+                    extension,
+                    user: req.session.user.username
+                });
             })
-            const extension = path.extname(req.file.originalname);
-            fs.rename(`./uploads/${req.file.path.slice(8)}`, `./uploads/${id.replace(/-/g, '')}${extension}`, function (err) {
-                console.log(err);
-            });
-            db.set(id.replace(/-/g, ''), {
-                id: id.replace(/-/g, ''),
-                caption,
-                extension,
-                user: req.session.user.username
-            });
             setTimeout(() => {
                 res.redirect(`/`);
             }, 300)

@@ -35,6 +35,13 @@ body {
     padding: 0 4.5vw;
 }
 
+@media only screen and (max-width: 900px) {
+    .nav-wrapper {
+        flex-direction: column;
+        height: max-content !important;
+    }
+}
+
 .file-card {
     backdrop-filter: blur(5px);
     border-radius: 0.5rem;

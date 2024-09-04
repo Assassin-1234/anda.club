@@ -21,7 +21,8 @@
         </span>
       </div>
       <div class="flex items-center jusify-center gap-2">
-        <a href="/favorites"><i class="view-fav fa-regular fa-heart cursor-pointer text-[#0e0e0e] text-xl hover:scale-125"></i></a>
+        <a href="/favorites"><i
+            class="view-fav fa-regular fa-heart cursor-pointer text-[#0e0e0e] text-xl hover:scale-125"></i></a>
         <a href="/editprofile"
           class="user-info cursor-pointer p-0.5 px-2.5 rounded-[3px] duration-75 hover:bg-[#0e0e0e] bg-[pink] flex items-center gap-2">
           <img src="<%= pfp %>" class="user-pfp w-8 rounded-full" />
@@ -37,15 +38,14 @@
     <form class="upload-form" onsubmit="loader()" method="POST" action="/upload" enctype="multipart/form-data">
       <div>
         <h2>Upload or Paste Image</h2>
-        <input required="" type="file" name="img" id="upload" hidden="">
+        <input required="" multiple type="file" name="img" id="upload" hidden="">
         <label for="upload">Choose File</label>
         <span id="file-chosen">No file chosen</span>
       </div>
-      <img id="img-preview" src="#" alt="preview" class="hidden mt-3 rounded-[7px]">
       <div>
         <div class="form-container flex flex-col mt-3">
           <h3 class="form-label text-xl uppercase text-gray-300">Caption</h3>
-          <input class="form-input" type="text" id="caption" placeholder="caption" name="caption" required>
+          <input class="form-input" type="text" id="caption" placeholder="A lovely image!" name="caption" required>
         </div>
         <input type="submit" class="btn-css center" value="Upload">
       </div>
@@ -56,16 +56,19 @@
     const fileChosen = document.getElementById('file-chosen');
     fileInput.addEventListener('change', function () {
       fileChosen.textContent = this.files[0].name;
-      const oFReader = new FileReader();
-      oFReader.readAsDataURL(document.getElementById("upload").files[0]);
-
-      oFReader.onload = function (oFREvent) {
-        const { result } = oFREvent.target;
-        if (result.includes('image')) {
-          document.getElementById("img-preview").src = result;
-          document.getElementById("img-preview").classList.remove('hidden');
-        }
-      };
+      Array.from(document.getElementById("upload").files).forEach(f => {
+        const previewElem = document.createElement("img");
+        const oFReader = new FileReader();
+        oFReader.readAsDataURL(f);
+        oFReader.onload = function (oFREvent) {
+          const { result } = oFREvent.target;
+          if (result.includes('image')) {
+            previewElem.setAttribute("src", result);
+            previewElem.setAttribute("class", "mt-2 rounded-[7px]");
+            document.querySelector(".upload-form").appendChild(previewElem)
+          }
+        };
+      });
     })
     window.addEventListener('paste', e => {
       console.log(e.clipboardData)
